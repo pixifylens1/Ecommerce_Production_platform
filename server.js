@@ -6,7 +6,8 @@ import authRoutes from './routes/authRoute.js'
 import categoryRoutes from './routes/categoryRoute.js'
 import productRoutes from './routes/productRoutes.js'
 import cors from 'cors';
-import path from 'path';
+import path from "path";
+import { fileURLToPath } from "url";
 //configure env
 dotenv.config();
 
@@ -15,7 +16,9 @@ connectdb();
 
 //rest object
 const app = express();
-
+// Define __dirname manually for ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 //middleware
 app.use(express.json());
 app.use(morgan('dev'))
@@ -26,8 +29,8 @@ app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/category', categoryRoutes)
 app.use('/api/v1/product', productRoutes)
 
-//static files
-app.use(express.static(path.join(__dirname,'./client/build'))); //for production
+// Now use __dirname safely
+app.use(express.static(path.join(__dirname, './client/build'))); //for production
 
 app.get('*',function(req,res){
     res.sendFile(path.join(__dirname,'./client/build/index.html'));
